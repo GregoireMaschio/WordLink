@@ -1,0 +1,5 @@
+<resources>
+    <string name="app_name">WordLink2</string>
+    <string name="valid_toast">Ce mot est valide, vous pouvez continuer</string>
+    <string name="invalid_toast">Ce mot est invalide</string>
+</resources>
