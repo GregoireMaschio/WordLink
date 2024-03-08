@@ -1,19 +1,23 @@
 package com.example.wordlink2.repository
 
 import android.content.Context
-import com.example.wordlink2.data.GitHubService.fetchDictionary
+import com.example.wordlink2.data.GitHubService.fetchDictionaryFromFile
 import com.example.wordlink2.data.Word
 
 class DictionaryRepository private constructor(context: Context){
 
-    var words: MutableList<Word> = fetchDictionary("https://raw.githubusercontent.com/GregoireMaschio/WordLink/master/app/src/main/java/com/example/wordlink2/assets/liste_anglais.txt")
-
+//    var words: MutableList<Word> = fetchDictionary("https://raw.githubusercontent.com/GregoireMaschio/WordLink/master/app/src/main/java/com/example/wordlink2/assets/liste_anglais.txt")
+    var words: MutableList<Word> = fetchDictionaryFromFile(context,"liste_anglais.txt")
     fun getWords(): ArrayList<Word> {
         return ArrayList(words)
     }
 
     fun getWord(index: Int): Word {
         return words[index]
+    }
+
+    fun getWordByValue(value: String): Word? {
+        return words.find { it.value == value }
     }
 
     companion object{
@@ -29,19 +33,4 @@ class DictionaryRepository private constructor(context: Context){
             return INSTANCE
         }
     }
-}
-fun main() {
-//    // Initialize the repository
-//    DictionaryRepository.initialize()
-//
-//    // Get the repository instance
-//    val repository = DictionaryRepository.get()
-//
-//    // Example usage: Get words from the repository
-//    val words = repository?.getWords()
-//    words?.forEach { println(it) }
-//
-//    // Example usage: Get a specific word from the repository
-//    val word = repository?.getWord(0)
-//    println("First word: $word")
 }

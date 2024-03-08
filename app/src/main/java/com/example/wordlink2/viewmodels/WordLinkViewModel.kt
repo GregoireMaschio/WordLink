@@ -15,18 +15,20 @@ class WordLinkViewModel: ViewModel() {
 
     val uiState: StateFlow<GameUIState> = _uiState.asStateFlow()
 
-    private val dictionaryRepository:DictionaryRepository? = DictionaryRepository.get()
+    private val dictionaryRepository: DictionaryRepository? = DictionaryRepository.get()
 
     private val _dictionary = mutableStateOf<List<Word>>(emptyList())
     val dictionary: State<List<Word>> = _dictionary
 
-//    init {
-//        fetchDictionary()
-//    }
+    init {
+        fetchDictionary()
+    }
 
-//    private fun fetchDictionary() {
-//        repository?.let {
-//            _dictionary.value = it.getWords()
-//        }
-//    }
+    fun getWordByValue(value: String): Word? {
+        return dictionaryRepository?.getWordByValue(value)
+    }
+
+    private fun fetchDictionary() {
+        _dictionary.value = dictionaryRepository?.getWords()!!
+    }
 }

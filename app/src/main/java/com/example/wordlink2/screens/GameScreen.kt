@@ -50,7 +50,7 @@ fun GameScreen(
     var word by remember { mutableStateOf("") }
     val coroutineScope = rememberCoroutineScope()
 
-    val dictionary = wordLinkViewModel.dictionary.value
+    var dictionary = wordLinkViewModel.dictionary
 
     Column(
         modifier = Modifier
@@ -59,9 +59,11 @@ fun GameScreen(
         horizontalAlignment = Alignment.CenterHorizontally // Center the column horizontally
     ) {
         Row {
-            for (words in dictionary) {
-                Text(words.value)
-            }
+//            for (words in dictionary) {
+//                Text(words.value)
+//            }
+//           Text(dictionary.value.get(12).value)
+//            wordLinkViewModel.getWordByValue("love")?.let { Text(it.value) }
         }
         // Title, Start and End Words, and Entered Words
         Text(
