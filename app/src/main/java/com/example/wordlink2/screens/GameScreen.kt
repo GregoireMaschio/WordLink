@@ -50,12 +50,19 @@ fun GameScreen(
     var word by remember { mutableStateOf("") }
     val coroutineScope = rememberCoroutineScope()
 
+    val dictionary = wordLinkViewModel.dictionary.value
+
     Column(
         modifier = Modifier
             .fillMaxSize()
             .padding(16.dp),
         horizontalAlignment = Alignment.CenterHorizontally // Center the column horizontally
     ) {
+        Row {
+            for (words in dictionary) {
+                Text(words.value)
+            }
+        }
         // Title, Start and End Words, and Entered Words
         Text(
             text = "WordLink",

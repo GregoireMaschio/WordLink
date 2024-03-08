@@ -24,7 +24,6 @@ fun WordLinkScreen(modifier:Modifier = Modifier){
     var currentScreen by remember { mutableStateOf("HOME") }
     var wordLinkViewModel = WordLinkViewModel()
     val context = LocalContext.current
-
     val gameUIState by wordLinkViewModel.uiState.collectAsState()
 
     Surface(modifier){
