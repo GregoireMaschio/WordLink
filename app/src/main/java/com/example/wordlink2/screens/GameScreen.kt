@@ -27,10 +27,12 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.example.wordlink2.R
 import com.example.wordlink2.components.Timer
 import com.example.wordlink2.ui.GameUIState
 import com.example.wordlink2.viewmodels.WordLinkViewModel
@@ -41,7 +43,8 @@ fun GameScreen(
     onNavigateBack: () -> Unit,
     modifier: Modifier = Modifier,
     wordLinkViewModel: WordLinkViewModel = WordLinkViewModel(),
-    gameUIState: GameUIState = GameUIState()
+    gameUIState: GameUIState = GameUIState(),
+    isFrench: Boolean
 
 ){
     var startWord by remember { mutableStateOf("pan") }
@@ -76,11 +79,11 @@ fun GameScreen(
             modifier = Modifier.fillMaxWidth(),
             horizontalArrangement = Arrangement.SpaceBetween
         ) {
-            LabelWithText(label = "Start Word", text = startWord)
-            LabelWithText(label = "End Word", text = endWord)
+            LabelWithText(label = stringResource(id = if(isFrench) R.string.start_word_fr else R.string.start_word_en), text = startWord)
+            LabelWithText(label = stringResource(id = if(isFrench) R.string.target_word_fr else R.string.target_word_en), text = endWord)
         }
 
-        Timer(coroutineScope,60)
+        Timer(coroutineScope,60,isFrench)
 
         // Entered Words
         Column(
@@ -118,7 +121,7 @@ fun GameScreen(
                     word = ""
                 }
             },
-            label = "Enter a word"
+            label = stringResource(id = if(isFrench) R.string.input_fr else R.string.input_en)
         )
 
         // Submit Button
@@ -131,7 +134,7 @@ fun GameScreen(
             },
             modifier = Modifier.align(Alignment.End)
         ) {
-            Text("Add Word")
+            Text(stringResource(id = if(isFrench) R.string.add_btn_fr else R.string.add_btn_en))
         }
 
         //Home Button

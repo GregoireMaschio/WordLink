@@ -25,20 +25,24 @@ fun WordLinkScreen(modifier:Modifier = Modifier){
     var wordLinkViewModel = WordLinkViewModel()
     val context = LocalContext.current
     val gameUIState by wordLinkViewModel.uiState.collectAsState()
+    var isFrench by remember { mutableStateOf(false) }
 
     Surface(modifier){
         if(currentScreen == "HOME"){
             HomeScreen(
                 onPlayClick = { currentScreen = "GAME" },
-                onChangeDictionaryClick = { /*TODO*/ }) {
-
-            }
+                onChangeDictionaryClick = { /*TODO*/ },
+                onLanguageChangeClick = {
+                                        isFrench =!isFrench
+                },
+                isFrench = isFrench)
         }else{
             GameScreen(
                 onNavigateBack = {currentScreen = "HOME"},
                 modifier=modifier,
                 wordLinkViewModel = wordLinkViewModel,
                 gameUIState = gameUIState,
+                isFrench = isFrench
             )
         }
     }

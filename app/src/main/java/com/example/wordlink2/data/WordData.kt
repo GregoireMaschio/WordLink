@@ -68,7 +68,7 @@ object GitHubService{
 
 
 fun main(){
-    val url = "https://raw.githubusercontent.com/GregoireMaschio/WordLink/master/app/src/main/java/com/example/wordlink2/assets/liste_anglais.txt"
+    val url = "https://raw.githubusercontent.com/GregoireMaschio/WordLink/master/app/src/main/assets/liste_anglais.txt"
     val dict = fetchDictionary(url)
     println(dict)
     println(dict[1].value)

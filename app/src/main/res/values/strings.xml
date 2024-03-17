@@ -2,4 +2,20 @@
     <string name="app_name">WordLink2</string>
     <string name="valid_toast">Ce mot est valide, vous pouvez continuer</string>
     <string name="invalid_toast">Ce mot est invalide</string>
+    <string name="langue_btn_fr">Changer de Langue</string>
+    <string name="langue_btn_en">Change Language</string>
+    <string name="dictionnaire_btn_fr">Changer de Langue</string>
+    <string name="dictionnaire_btn_en">Change Dictionary</string>
+    <string name="play_btn_fr">Jouer</string>
+    <string name="play_btn_en">Play</string>
+    <string name="start_word_fr">Mot de Départ</string>
+    <string name="start_word_en">Start Word</string>
+    <string name="target_word_fr">Mot Cible</string>
+    <string name="target_word_en">Target Word</string>
+    <string name="input_fr">Entrez un mot</string>
+    <string name="input_en">Enter a word</string>
+    <string name="add_btn_fr">Ajouter Mot</string>
+    <string name="add_btn_en">Add Word</string>
+    <string name="timer_text_fr">Temps Restant</string>
+    <string name="timer_text_en">Remaining Time</string>
 </resources>
