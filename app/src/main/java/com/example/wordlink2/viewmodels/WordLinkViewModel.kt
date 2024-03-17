@@ -31,4 +31,24 @@ class WordLinkViewModel: ViewModel() {
     private fun fetchDictionary() {
         _dictionary.value = dictionaryRepository?.getWords()!!
     }
+
+    fun isValidInput(previousWord: String, userInput: String, dictionary: MutableList<Word>): Boolean {
+        if (userInput.length != previousWord.length) {
+            return false
+        }
+
+        var diffCount = 0
+        for (i in previousWord.indices) {
+            if (previousWord[i] != userInput[i]) {
+                diffCount++
+                if (diffCount > 1) {
+                    return false
+                }
+            }
+        }
+        if (diffCount != 1) {
+            return false
+        }
+        return dictionary.any { it.value == userInput }
+    }
 }

@@ -18,6 +18,7 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.State
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -34,6 +35,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.wordlink2.R
 import com.example.wordlink2.components.Timer
+import com.example.wordlink2.data.Word
 import com.example.wordlink2.ui.GameUIState
 import com.example.wordlink2.viewmodels.WordLinkViewModel
 
@@ -47,13 +49,16 @@ fun GameScreen(
     isFrench: Boolean
 
 ){
-    var startWord by remember { mutableStateOf("pan") }
+    val dictionaryState: State<List<Word>> = wordLinkViewModel.dictionary
+    val dictionary: List<Word> = dictionaryState.value
+
+    var startWord by remember { mutableStateOf(dictionary.random().value) }
     var enteredWords by remember { mutableStateOf(listOf<String>()) }
-    var endWord by remember { mutableStateOf("pansexual") }
+    var endWord by remember { mutableStateOf(dictionary.random().value) }
     var word by remember { mutableStateOf("") }
     val coroutineScope = rememberCoroutineScope()
 
-    var dictionary = wordLinkViewModel.dictionary
+
 
     Column(
         modifier = Modifier
