@@ -145,6 +145,7 @@ fun main(){
 //    println(dict)
 //    println(dict[1].value)
 
-    println(GitHubService.findPath(dict))
+//    println(GitHubService.findPath(dict))
+    println(GitHubService.buildPath(dict,"has", mutableListOf("has"),8))
 }
 

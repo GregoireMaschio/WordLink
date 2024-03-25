@@ -45,14 +45,13 @@ fun GameScreen(
     onNavigateBack: () -> Unit,
     modifier: Modifier = Modifier,
     wordLinkViewModel: WordLinkViewModel = WordLinkViewModel(),
+    path: List<String>?,
     gameUIState: GameUIState = GameUIState(),
     isFrench: Boolean
 
 ){
     val dictionaryState: State<List<Word>> = wordLinkViewModel.dictionary
     val dictionary: List<Word> = dictionaryState.value
-    val path = wordLinkViewModel.path()
-//    val path = listOf("oui","non")
 
     var startWord by remember { mutableStateOf(path?.get(0) ?: "") }
     var enteredWords by remember { mutableStateOf(listOf<String>()) }
