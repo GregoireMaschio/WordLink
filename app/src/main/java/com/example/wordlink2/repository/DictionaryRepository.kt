@@ -1,6 +1,7 @@
 package com.example.wordlink2.repository
 
 import android.content.Context
+import com.example.wordlink2.data.GitHubService
 import com.example.wordlink2.data.GitHubService.fetchDictionaryFromFile
 import com.example.wordlink2.data.Word
 
@@ -14,6 +15,10 @@ class DictionaryRepository private constructor(context: Context){
 
     fun getWord(index: Int): Word {
         return words[index]
+    }
+
+    fun path():List<String>{
+        return GitHubService.findPath(words)
     }
 
     fun getWordByValue(value: String): Word? {

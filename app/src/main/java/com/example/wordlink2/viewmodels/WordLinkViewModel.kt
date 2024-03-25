@@ -51,4 +51,8 @@ class WordLinkViewModel: ViewModel() {
         }
         return dictionary.any { it.value == userInput }
     }
+
+    fun path(): List<String>? {
+       return dictionaryRepository?.path()
+    }
 }

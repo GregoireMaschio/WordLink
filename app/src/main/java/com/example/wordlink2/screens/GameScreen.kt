@@ -51,10 +51,12 @@ fun GameScreen(
 ){
     val dictionaryState: State<List<Word>> = wordLinkViewModel.dictionary
     val dictionary: List<Word> = dictionaryState.value
+    val path = wordLinkViewModel.path()
+//    val path = listOf("oui","non")
 
-    var startWord by remember { mutableStateOf(dictionary.random().value) }
+    var startWord by remember { mutableStateOf(path?.get(0) ?: "") }
     var enteredWords by remember { mutableStateOf(listOf<String>()) }
-    var endWord by remember { mutableStateOf(dictionary.random().value) }
+    var endWord by remember { mutableStateOf(path?.lastOrNull() ?:"") }
     var word by remember { mutableStateOf("") }
     val coroutineScope = rememberCoroutineScope()
 
@@ -94,15 +96,21 @@ fun GameScreen(
         Column(
             modifier = Modifier.padding(vertical = 8.dp)
         ) {
-            enteredWords.forEachIndexed { index, word ->
+            enteredWords.forEachIndexed { index, enteredWord ->
+                val backgroundColor = if (enteredWord in path.orEmpty()) {
+                    Color.Green // Word is in the path
+                } else {
+                    Color.Red // Word is not in the path
+                }
+
                 Box(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .background(Color.LightGray)
+                        .background(backgroundColor)
                         .padding(vertical = 8.dp, horizontal = 16.dp)
                 ) {
                     Text(
-                        text = word,
+                        text = enteredWord,
                         textAlign = TextAlign.Center,
                         modifier = Modifier.align(Alignment.Center)
                     )
