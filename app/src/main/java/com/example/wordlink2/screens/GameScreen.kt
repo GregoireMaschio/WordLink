@@ -13,6 +13,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Home
+import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -52,29 +53,45 @@ fun GameScreen(
 ){
     val dictionaryState: State<List<Word>> = wordLinkViewModel.dictionary
     val dictionary: List<Word> = dictionaryState.value
+    println(path)
 
     var startWord by remember { mutableStateOf(path?.get(0) ?: "") }
     var enteredWords by remember { mutableStateOf(listOf<String>()) }
     var endWord by remember { mutableStateOf(path?.lastOrNull() ?:"") }
     var word by remember { mutableStateOf("") }
     val coroutineScope = rememberCoroutineScope()
+    var gameWon by remember { mutableStateOf(false) }
+    var showWarning by remember { mutableStateOf(false) }
+    var gameLost by remember { mutableStateOf(false) }
 
+    val handleGameLoss: () -> Unit = {
+        gameLost = true
+    }
+
+    if (gameLost) {
+        AlertDialog(
+            onDismissRequest = { gameLost = false },
+            title = { Text("You Lost!") },
+            confirmButton = {
+                Button(
+                    onClick = {
+                        gameLost = false
+                        onNavigateBack()
+                    }
+                ) {
+                    Text("OK")
+                }
+            }
+        )
+    }
 
 
     Column(
         modifier = Modifier
             .fillMaxSize()
             .padding(16.dp),
-        horizontalAlignment = Alignment.CenterHorizontally // Center the column horizontally
+        horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        Row {
-//            for (words in dictionary) {
-//                Text(words.value)
-//            }
-//           Text(dictionary.value.get(12).value)
-//            wordLinkViewModel.getWordByValue("love")?.let { Text(it.value) }
-        }
-        // Title, Start and End Words, and Entered Words
         Text(
             text = "WordLink",
             fontSize = 34.sp,
@@ -89,17 +106,17 @@ fun GameScreen(
             LabelWithText(label = stringResource(id = if(isFrench) R.string.target_word_fr else R.string.target_word_en), text = endWord)
         }
 
-        Timer(coroutineScope,60,isFrench)
+        Timer(coroutineScope,60,isFrench,handleGameLoss)
 
         // Entered Words
         Column(
             modifier = Modifier.padding(vertical = 8.dp)
         ) {
             enteredWords.forEachIndexed { index, enteredWord ->
-                val backgroundColor = if (enteredWord in path.orEmpty()) {
-                    Color.Green // Word is in the path
-                } else {
-                    Color.Red // Word is not in the path
+                val backgroundColor = when {
+                    enteredWord == endWord -> Color.Green
+                    enteredWord in path.orEmpty() -> Color(0xFFFFA500)
+                    else -> Color.Red
                 }
 
                 Box(
@@ -121,33 +138,77 @@ fun GameScreen(
             }
         }
 
+        if (enteredWords.lastOrNull() == endWord && enteredWords.size > 1) {
+            gameWon = true
+        }
+
+        if (gameWon) {
+            AlertDialog(
+                onDismissRequest = {
+                    gameWon = false
+                   },
+                title = { Text("You Won!") },
+                confirmButton = {
+                    Button(
+                        onClick = {
+                            gameWon = false
+                            onNavigateBack()}
+                    ) {
+                        Text("OK")
+                    }
+                }
+            )
+        }
+
         // Input field
         WordInput(
             value = word,
             onValueChange = {
                 word = it
+                if (enteredWords.isNotEmpty() && word.isNotEmpty() && word.length != enteredWords.last().length + 1) {
+                    showWarning = true
+                } else {
+                    showWarning = false
+                }
             },
             onSubmitted = {
-                if (word.isNotBlank()) {
+                if (word.isNotEmpty() && (enteredWords.isEmpty() || word.length == enteredWords.last().length + 1)) {
                     enteredWords = enteredWords.toMutableList().apply { add(word) }
                     word = ""
+                    showWarning = false
+                } else {
+                    showWarning = true
                 }
             },
             label = stringResource(id = if(isFrench) R.string.input_fr else R.string.input_en)
         )
 
-        // Submit Button
+        // Show warning if necessary
+        if (showWarning) {
+            Text(
+                text = "Word should be longer than the last",
+                color = Color.Red,
+                modifier = Modifier.padding(vertical = 4.dp)
+            )
+        }
+
+        // Add button with click listener
         Button(
             onClick = {
-                if (word.isNotBlank()) {
+                if (word.isNotEmpty() && (enteredWords.isEmpty() || word.length == enteredWords.last().length + 1)) {
                     enteredWords = enteredWords.toMutableList().apply { add(word) }
                     word = ""
+                    showWarning = false
+                } else {
+                    showWarning = true
                 }
             },
             modifier = Modifier.align(Alignment.End)
         ) {
             Text(stringResource(id = if(isFrench) R.string.add_btn_fr else R.string.add_btn_en))
         }
+
+
 
         //Home Button
         Column(
@@ -157,7 +218,6 @@ fun GameScreen(
             verticalArrangement = Arrangement.Bottom,
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            // IconButton to navigate back to HomeScreen
             IconButton(
                 onClick = { onNavigateBack() },
                 modifier = Modifier.padding(bottom = 16.dp)

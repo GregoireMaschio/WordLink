@@ -16,7 +16,7 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
 @Composable
-fun Timer(coroutineScope: CoroutineScope, duration: Int,isFrench: Boolean) {
+fun Timer(coroutineScope: CoroutineScope, duration: Int, isFrench: Boolean, onTimerFinished: () -> Unit) {
     var timerState by remember { mutableStateOf(duration) }
 
     DisposableEffect(Unit) {
@@ -25,14 +25,18 @@ fun Timer(coroutineScope: CoroutineScope, duration: Int,isFrench: Boolean) {
                 delay(1000)
                 timerState--
             }
+            // Call the callback function when the timer finishes
+            onTimerFinished()
         }
 
         onDispose {
             job.cancel()
         }
     }
-    
-    Text(text = stringResource(id = if(isFrench) R.string.timer_text_fr else R.string.timer_text_en))
+
+    Text(
+        text = stringResource(id = if (isFrench) R.string.timer_text_fr else R.string.timer_text_en)
+    )
 
     Text(
         text = timerState.toString(),
@@ -40,3 +44,4 @@ fun Timer(coroutineScope: CoroutineScope, duration: Int,isFrench: Boolean) {
         fontWeight = FontWeight.Bold
     )
 }
+

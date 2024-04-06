@@ -6,17 +6,18 @@ import com.example.wordlink2.data.GitHubService.fetchDictionary
 import java.io.BufferedReader
 import java.io.InputStreamReader
 import java.net.URL
+import javax.net.ssl.HttpsURLConnection
 
 object GitHubService{
 
-    private val backUpWords = listOf("en","ob","jo","ser","has","tea","os")
+    private val backUpWords = listOf("ing","ob","jo","ser","has","tea","os")
 
     fun fetchDictionary(urlString: String): MutableList<Word> {
             val wordList = mutableListOf<Word>()
             wordList.add(createWord("testestest"))
             try {
                 val url = URL(urlString)
-                val connection = url.openConnection()
+                val connection = url.openConnection()  as HttpsURLConnection
                 val inputStream = connection.getInputStream()
                 val reader = BufferedReader(InputStreamReader(inputStream))
 
@@ -89,7 +90,7 @@ object GitHubService{
     }
     fun buildPath(dictionary: MutableList<Word>, currentWord: String, path: MutableList<String>, maxDepth: Int): List<String> {
         if (path.size >= maxDepth) {
-            return path
+            return path.sortedBy { it.length }
         }
 
         val nextWords = mutableListOf<String>()
@@ -108,12 +109,27 @@ object GitHubService{
         for (nextWord in nextWords) {
             if (!path.contains(nextWord)) {
                 path.add(nextWord)
-                return buildPath(dictionary, nextWord, path, maxDepth)
+                buildPath(dictionary, nextWord, path, maxDepth)
             }
         }
 
-        return path
+        return filterWordsFromPath(path.sortedBy { it.length })
     }
+
+    fun filterWordsFromPath(path: List<String>): List<String> {
+        if (path.size < 2) return emptyList()
+
+        val firstWord = path.first()
+        val lastWord = path.last()
+
+        fun containsOnlyLetters(word: String, firstWord: String, lastWord: String): Boolean {
+            val lettersToCheck = (firstWord + lastWord).toSet()
+            return word.all { it in lettersToCheck }
+        }
+
+        return path.filter { containsOnlyLetters(it, firstWord, lastWord) }
+    }
+
 
     fun buildPathWithFallback(dictionary: MutableList<Word>, maxDepth: Int = 8, maxRetries: Int = 3): List<String> {
         var retries = 0
@@ -143,9 +159,11 @@ fun main(){
     val url = "https://raw.githubusercontent.com/GregoireMaschio/WordLink/master/app/src/main/assets/liste_anglais.txt"
     val dict = fetchDictionary(url)
 //    println(dict)
-//    println(dict[1].value)
+//    println(dict[1].value
 
-//    println(GitHubService.findPath(dict))
-    println(GitHubService.buildPath(dict,"has", mutableListOf("has"),8))
+    println(GitHubService.findPath(dict))
+//    val word = "pan"
+//    println(GitHubService.buildPath(dict,word, mutableListOf(word),8))
+
 }
 
