@@ -18,4 +18,10 @@
     <string name="add_btn_en">Add Word</string>
     <string name="timer_text_fr">Temps Restant</string>
     <string name="timer_text_en">Remaining Time</string>
+    <string name="warning_text_fr">Le mot devrait avoir une lettre de plus que le précédent</string>
+    <string name="warning_text_en">Word should be one character longer than the last</string>
+    <string name="win_fr">Vous avez gagné!</string>
+    <string name="win_en">You Won!</string>
+    <string name="lost_fr">Vous avez perdu!</string>
+    <string name="lost_en">You Lost!</string>
 </resources>

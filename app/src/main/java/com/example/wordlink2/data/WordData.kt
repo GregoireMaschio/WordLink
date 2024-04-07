@@ -10,8 +10,6 @@ import javax.net.ssl.HttpsURLConnection
 
 object GitHubService{
 
-    private val backUpWords = listOf("ing","ob","jo","ser","has","tea","os")
-
     fun fetchDictionary(urlString: String): MutableList<Word> {
             val wordList = mutableListOf<Word>()
             wordList.add(createWord("testestest"))
@@ -68,27 +66,25 @@ object GitHubService{
         return Word(characterCounts, word)
     }
 
-    fun findStartWord(dictionary: MutableList<Word>): Word? {
-        val shortWords = mutableListOf<Word>()
-        for (word in dictionary) {
-            if (word.value.length in 2..3) {
-                shortWords.add(word)
-            }
-        }
+    private fun findStartWord(dictionary: MutableList<Word>): Word? {
+        val shortWords = dictionary.filter { it.value.length in 2..3}
         return shortWords.randomOrNull()
     }
 
     fun findPath(dictionary: MutableList<Word>, maxDepth: Int = 8): List<String> {
-        val startWord = findStartWord(dictionary)?.value ?: return emptyList()
-        val path = mutableListOf(startWord)
-        val resultPath = buildPath(dictionary, startWord, path, maxDepth)
-        return if (resultPath.isEmpty() || resultPath.size < 3) {
-            buildPathWithFallback(dictionary, maxDepth)
-        } else {
-            resultPath
+        var startWord = findStartWord(dictionary)?.value ?: return emptyList()
+        var path = mutableListOf(startWord)
+        var resultPath = buildPath(dictionary, startWord, path, maxDepth)
+
+        while (resultPath.isEmpty() || resultPath.size < 3) {
+            startWord = findStartWord(dictionary)?.value ?: return emptyList()
+            path = mutableListOf(startWord)
+            resultPath = buildPath(dictionary, startWord, path, maxDepth)
         }
+
+        return resultPath
     }
-    fun buildPath(dictionary: MutableList<Word>, currentWord: String, path: MutableList<String>, maxDepth: Int): List<String> {
+    private fun buildPath(dictionary: MutableList<Word>, currentWord: String, path: MutableList<String>, maxDepth: Int): List<String> {
         if (path.size >= maxDepth) {
             return path.sortedBy { it.length }
         }
@@ -116,7 +112,7 @@ object GitHubService{
         return filterWordsFromPath(path.sortedBy { it.length })
     }
 
-    fun filterWordsFromPath(path: List<String>): List<String> {
+    private fun filterWordsFromPath(path: List<String>): List<String> {
         if (path.size < 2) return emptyList()
 
         val firstWord = path.first()
@@ -128,28 +124,6 @@ object GitHubService{
         }
 
         return path.filter { containsOnlyLetters(it, firstWord, lastWord) }
-    }
-
-
-    fun buildPathWithFallback(dictionary: MutableList<Word>, maxDepth: Int = 8, maxRetries: Int = 3): List<String> {
-        var retries = 0
-        while (retries < maxRetries) {
-            val startWord = backUpWords.random()
-            val path = mutableListOf(startWord)
-            val result = buildPath(dictionary, startWord, path, maxDepth)
-            if (result.isEmpty() || result.size == 1) {
-                return mutableListOf(backUpWords.random())
-            }
-            return result
-            retries++
-        }
-        return emptyList()
-    }
-
-    fun buildPath(dictionary: MutableList<Word>, maxDepth: Int = 8): List<String> {
-        val startWord = findStartWord(dictionary)?.value ?: return emptyList()
-        val path = mutableListOf(startWord)
-        return buildPath(dictionary, startWord, path, maxDepth)
     }
 
 }

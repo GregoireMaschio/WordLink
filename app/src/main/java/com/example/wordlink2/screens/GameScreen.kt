@@ -57,6 +57,7 @@ fun GameScreen(
 
     var startWord by remember { mutableStateOf(path?.get(0) ?: "") }
     var enteredWords by remember { mutableStateOf(listOf<String>()) }
+    var validEnteredWords by remember { mutableStateOf(if (startWord.isNotEmpty()) listOf(startWord) else emptyList()) }
     var endWord by remember { mutableStateOf(path?.lastOrNull() ?:"") }
     var word by remember { mutableStateOf("") }
     val coroutineScope = rememberCoroutineScope()
@@ -71,7 +72,7 @@ fun GameScreen(
     if (gameLost) {
         AlertDialog(
             onDismissRequest = { gameLost = false },
-            title = { Text("You Lost!") },
+            title = { Text(stringResource(id = if(isFrench) R.string.lost_fr else R.string.lost_en)) },
             confirmButton = {
                 Button(
                     onClick = {
@@ -147,7 +148,7 @@ fun GameScreen(
                 onDismissRequest = {
                     gameWon = false
                    },
-                title = { Text("You Won!") },
+                title = { Text(stringResource(id = if(isFrench) R.string.win_fr else R.string.win_en)) },
                 confirmButton = {
                     Button(
                         onClick = {
@@ -165,14 +166,19 @@ fun GameScreen(
             value = word,
             onValueChange = {
                 word = it
-                if (enteredWords.isNotEmpty() && word.isNotEmpty() && word.length != enteredWords.last().length + 1) {
+                if (word.isNotEmpty() && (word.length != validEnteredWords.last().length + 1)) {
                     showWarning = true
                 } else {
                     showWarning = false
                 }
             },
             onSubmitted = {
-                if (word.isNotEmpty() && (enteredWords.isEmpty() || word.length == enteredWords.last().length + 1)) {
+                if (word.isNotEmpty() && (word.length == validEnteredWords.last().length + 1)) {
+                    if (path != null) {
+                        if(path.contains(word)){
+                            validEnteredWords = validEnteredWords.toMutableList().apply { add(word) }
+                        }
+                    }
                     enteredWords = enteredWords.toMutableList().apply { add(word) }
                     word = ""
                     showWarning = false
@@ -186,7 +192,7 @@ fun GameScreen(
         // Show warning if necessary
         if (showWarning) {
             Text(
-                text = "Word should be longer than the last",
+                text = stringResource(id = if(isFrench) R.string.warning_text_fr else R.string.warning_text_en),
                 color = Color.Red,
                 modifier = Modifier.padding(vertical = 4.dp)
             )
@@ -195,7 +201,12 @@ fun GameScreen(
         // Add button with click listener
         Button(
             onClick = {
-                if (word.isNotEmpty() && (enteredWords.isEmpty() || word.length == enteredWords.last().length + 1)) {
+                if (word.isNotEmpty() && (word.length == validEnteredWords.last().length + 1)) {
+                    if (path != null) {
+                        if(path.contains(word)){
+                            validEnteredWords = validEnteredWords.toMutableList().apply { add(word) }
+                        }
+                    }
                     enteredWords = enteredWords.toMutableList().apply { add(word) }
                     word = ""
                     showWarning = false
