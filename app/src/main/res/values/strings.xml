@@ -4,7 +4,7 @@
     <string name="invalid_toast">Ce mot est invalide</string>
     <string name="langue_btn_fr">Changer de Langue</string>
     <string name="langue_btn_en">Change Language</string>
-    <string name="dictionnaire_btn_fr">Changer de Langue</string>
+    <string name="dictionnaire_btn_fr">Changer de Dictionnaire</string>
     <string name="dictionnaire_btn_en">Change Dictionary</string>
     <string name="play_btn_fr">Jouer</string>
     <string name="play_btn_en">Play</string>

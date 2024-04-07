@@ -23,16 +23,18 @@ enum class AppScreen(){
 fun WordLinkScreen(modifier:Modifier = Modifier){
     var currentScreen by remember { mutableStateOf("HOME") }
     var wordLinkViewModel = WordLinkViewModel()
-    var path = wordLinkViewModel.path()
+    var path: List<String>? = emptyList()
     val context = LocalContext.current
-    println(path)
+//    println(path)
     val gameUIState by wordLinkViewModel.uiState.collectAsState()
     var isFrench by remember { mutableStateOf(false) }
 
     Surface(modifier){
         if(currentScreen == "HOME"){
             HomeScreen(
-                onPlayClick = { currentScreen = "GAME" },
+                wordLinkViewModel = wordLinkViewModel,
+                onPlayClick = { currentScreen = "GAME"
+                              path = wordLinkViewModel.path()},
                 onChangeDictionaryClick = { /*TODO*/ },
                 onLanguageChangeClick = {
                                         isFrench =!isFrench

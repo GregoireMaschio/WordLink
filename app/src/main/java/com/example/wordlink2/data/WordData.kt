@@ -84,7 +84,7 @@ object GitHubService{
 
         return resultPath
     }
-    private fun buildPath(dictionary: MutableList<Word>, currentWord: String, path: MutableList<String>, maxDepth: Int): List<String> {
+    fun buildPath(dictionary: MutableList<Word>, currentWord: String, path: MutableList<String>, maxDepth: Int): List<String> {
         if (path.size >= maxDepth) {
             return path.sortedBy { it.length }
         }
@@ -130,14 +130,14 @@ object GitHubService{
 
 
 fun main(){
-    val url = "https://raw.githubusercontent.com/GregoireMaschio/WordLink/master/app/src/main/assets/liste_anglais.txt"
+    val url = "https://raw.githubusercontent.com/GregoireMaschio/WordLink/master/app/src/main/assets/liste_francais.txt"
     val dict = fetchDictionary(url)
 //    println(dict)
 //    println(dict[1].value
 
-    println(GitHubService.findPath(dict))
-//    val word = "pan"
-//    println(GitHubService.buildPath(dict,word, mutableListOf(word),8))
+//    println(GitHubService.findPath(dict))
+    val word = "pan"
+    println(GitHubService.buildPath(dict,word, mutableListOf(word),8))
 
 }
 
