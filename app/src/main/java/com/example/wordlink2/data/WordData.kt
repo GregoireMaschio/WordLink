@@ -3,6 +3,10 @@ package com.example.wordlink2.data
 import android.content.Context
 import android.util.Log
 import com.example.wordlink2.data.GitHubService.fetchDictionary
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.async
+import kotlinx.coroutines.coroutineScope
+import kotlinx.coroutines.withContext
 import java.io.BufferedReader
 import java.io.InputStreamReader
 import java.net.URL
@@ -10,28 +14,37 @@ import javax.net.ssl.HttpsURLConnection
 
 object GitHubService{
 
-    fun fetchDictionary(urlString: String): MutableList<Word> {
-            val wordList = mutableListOf<Word>()
-            wordList.add(createWord("testestest"))
-            try {
+    suspend fun fetchDictionary(urlString: String): MutableList<Word> = coroutineScope {
+        val wordList = mutableListOf<Word>()
+
+        try {
+            val fetchedWords = withContext(Dispatchers.IO) {
                 val url = URL(urlString)
-                val connection = url.openConnection()  as HttpsURLConnection
-                val inputStream = connection.getInputStream()
+                val connection = url.openConnection() as HttpsURLConnection
+                val inputStream = connection.inputStream
                 val reader = BufferedReader(InputStreamReader(inputStream))
 
-                var line: String?
-                while (reader.readLine().also { line = it } != null) {
-                    val word = createWord(line.orEmpty())
-                    wordList.add(word)
+                val fetchedWordsDeferred = async(Dispatchers.IO) {
+                    val words = mutableListOf<Word>()
+                    var line: String?
+                    while (reader.readLine().also { line = it } != null) {
+                        val word = createWord(line.orEmpty())
+                        words.add(word)
+                    }
+                    words
                 }
-
+                val result = fetchedWordsDeferred.await()
                 reader.close()
                 inputStream.close()
-            } catch (e: Exception) {
-                // Handle exceptions (e.g., network errors, IO errors)
-                e.printStackTrace()
+                result
             }
-            return wordList
+            wordList.addAll(fetchedWords)
+        } catch (e: Exception) {
+            // Handle exceptions (e.g., network errors, IO errors)
+            e.printStackTrace()
+        }
+
+        wordList
     }
 
     fun fetchDictionaryFromFile(context: Context, fileName: String): MutableList<Word> {
@@ -129,7 +142,7 @@ object GitHubService{
 }
 
 
-fun main(){
+suspend fun main(){
     val url = "https://raw.githubusercontent.com/GregoireMaschio/WordLink/master/app/src/main/assets/liste_francais.txt"
     val dict = fetchDictionary(url)
 //    println(dict)

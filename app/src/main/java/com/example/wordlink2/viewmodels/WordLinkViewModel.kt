@@ -23,7 +23,9 @@ class WordLinkViewModel: ViewModel() {
     init {
         fetchDictionary()
     }
-
+    fun changeDictionary(url: String) {
+        dictionaryRepository?.fetchNewDictionary(url)
+    }
     fun getWordByValue(value: String): Word? {
         return dictionaryRepository?.getWordByValue(value)
     }

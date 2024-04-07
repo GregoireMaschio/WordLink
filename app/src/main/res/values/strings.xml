@@ -24,4 +24,10 @@
     <string name="win_en">You Won!</string>
     <string name="lost_fr">Vous avez perdu!</string>
     <string name="lost_en">You Lost!</string>
+    <string name="url_fr">Entrez un url</string>
+    <string name="url_en">Enter url</string>
+    <string name="confirm_fr">Confirmer</string>
+    <string name="confirm_en">Submit</string>
+    <string name="cancel_fr">Annuler</string>
+    <string name="cancel_en">Cancel</string>
 </resources>
