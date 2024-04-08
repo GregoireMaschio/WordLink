@@ -105,12 +105,10 @@ object GitHubService{
         val nextWords = mutableListOf<String>()
 
         for (word in dictionary) {
-            if (word.value.length == currentWord.length + 1) {
-                for (i in 0..currentWord.length) {
-                    val newWord = currentWord.substring(0, i) + word.value[i] + currentWord.substring(i)
-                    if (!path.contains(newWord) && dictionary.any { it.value == newWord }) {
-                        nextWords.add(newWord)
-                    }
+            if (word.value.length == currentWord.length + 1 && isExtensionOf(word, currentWord)) {
+                val newWord = word.value
+                if (!path.contains(newWord)) {
+                    nextWords.add(newWord)
                 }
             }
         }
@@ -123,6 +121,18 @@ object GitHubService{
         }
 
         return filterWordsFromPath(path.sortedBy { it.length })
+    }
+
+    private fun isExtensionOf(word: Word, currentWord: String): Boolean {
+        val currentChars = currentWord.toCharArray()
+        val wordChars = word.value.toCharArray()
+
+        for (i in currentChars.indices) {
+            if (wordChars[i] != currentChars[i]) {
+                return wordChars.copyOfRange(i + 1, wordChars.size).contentEquals(currentChars.copyOfRange(i, currentChars.size))
+            }
+        }
+        return true
     }
 
     private fun filterWordsFromPath(path: List<String>): List<String> {
@@ -148,9 +158,9 @@ suspend fun main(){
 //    println(dict)
 //    println(dict[1].value
 
-//    println(GitHubService.findPath(dict))
-    val word = "pan"
-    println(GitHubService.buildPath(dict,word, mutableListOf(word),8))
+    println(GitHubService.findPath(dict))
+//    val word = "pan"
+//    println(GitHubService.buildPath(dict,word, mutableListOf(word),8))
 
 }
 
